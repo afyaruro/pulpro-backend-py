@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-saberpro
+    environment:
+      MYSQL_ROOT_PASSWORD: saberpro2024
+      MYSQL_DATABASE: saberproDB
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: saberpro2024
+    ports:
+      - "3307:3306"
+    networks:
+      - network-saberpro
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin-saberpro
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: saberpro2024
+    ports:
+      - "8080:80"
+    networks:
+      - network-saberpro
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-saberpro
+    ports:
+      - "8001:8000"
+    networks:
+      - network-saberpro
+    depends_on:
+      - mysql
+
+networks:
+  network-saberpro:
+    driver: bridge
